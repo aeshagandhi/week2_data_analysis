@@ -1,6 +1,8 @@
 # Week 2: Mini Assignment
-Data analysis using Pandas/Polars on a Kaggle dataset
+
 [![Python Template for IDS706](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml/badge.svg)](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml)
+
+Data analysis using Pandas/Polars on a Kaggle dataset
 
 All exploratory data analysis code is contained in the main.py file. The original code was done in main.ipynb to use jupyter notebook for more interactive exploration, and then main.ipynb was converted into main.py for the python script submission.
 

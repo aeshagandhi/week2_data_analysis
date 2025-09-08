@@ -1,5 +1,6 @@
-# week2_data_analysis
+# Week 2: Mini Assignment
 Data analysis using Pandas/Polars on a Kaggle dataset
+[![Python Template for IDS706](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml/badge.svg)](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml)
 
 All exploratory data analysis code is contained in the main.py file. The original code was done in main.ipynb to use jupyter notebook for more interactive exploration, and then main.ipynb was converted into main.py for the python script submission.
 
@@ -16,4 +17,15 @@ Steps include:
 Conclusion: Energy consumption and total greenhouse gas emissions are strong predictors of CO2 emissions, which seems reasonable as carbon dioxide and fossil fuels use are often connected. Some features such as population and GDP aren't as important as expected when considering the emissions, maybe because there isn't as direct of a relationship in comparison to the top two features mentioned. The second random forest achieved a reasonable R squared score, suggesting the model could be capturing the relationship between the emissions and energy use decently well. However, more analysis could be done at more specific granularity such as at the country level, since the model could be biased by countries that are large emitters of energy such as China, India, and US. I also visualized, via line plot, carbon dioxide emissions for the U.S over time from 2000 to 2024 and was surprised to see a general decrease in emissions, which could be potentially explained by a general shift in seeking alternative energy sources.
 
 
-This project also contains the necessary dependencies, workflow, and makefile for linting/formatting and installations.
+This project also includes the following development environment:
+Dev Containers: The project includes a VS Code Dev Container for a consistent, reproducible development setup across machines.
+
+Makefile: Common tasks (installing dependencies, formatting, linting, testing) are automated through a simple Makefile. For example:
+
+make install   # install dependencies
+make format    # auto-format with Black
+make lint      # lint with flake8
+make test      # run tests
+
+
+GitHub Actions Workflow: A CI workflow (.github/workflows/python.yml) automatically runs on every push and pull request. It installs dependencies, lints the code with flake8, and ensures the codebase stays clean.

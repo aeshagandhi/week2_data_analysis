@@ -4,7 +4,9 @@ Data analysis using Pandas/Polars on a Kaggle dataset
 
 All exploratory data analysis code is contained in the main.py file. The original code was done in main.ipynb to use jupyter notebook for more interactive exploration, and then main.ipynb was converted into main.py for the python script submission.
 
-This project explores global carbon dioxide and greenhouse gas emissions data and focuses on patterns on countries and years. The dataset includes detailed information on population, GDP, energy use, and emissions from cement, coal, oil, gas, flaring, and land-use change. The data is sourced from Our World in Data, but obtained from Kaggle. To complete the analysis, both Pandas and Polars were used for performance comparison and to do basic data cleaning/visualization. To create a machine learning model, a Random Forest Regressor from Scikit-learn was used to recognize patterns in beneficial features for predicting carbon dioxide emissions. 
+About the data: The dataset is called CO₂ Emissions Across Countries, Regions, & Sectors, which includes detailed historical information on population, GDP, energy use, and emissions from cement, coal, oil, gas, flaring, and land-use change. The data is sourced from Our World in Data, but obtained from Kaggle. The dataset can be publicly found through Kaggle: https://www.kaggle.com/datasets/shreyanshdangi/co-emissions-across-countries-regions-and-sectors.
+
+This project explores global carbon dioxide and greenhouse gas emissions data and focuses on patterns on countries and years. To complete the analysis, both Pandas and Polars were used for performance comparison and to do basic data cleaning/visualization. To create a machine learning model, a Random Forest Regressor from Scikit-learn was used to recognize patterns in beneficial features for predicting carbon dioxide emissions. 
 
 Steps include:
 1. Import the dataset by loading the Kaggle dataset and inspecting the data via .head(), .info(), and .describe(). The dataset is 13.77 MB and contains 43746 rows and 80 columns. While the intitial size is larger than 5 MB, filtering was done later to create a subset of the data.

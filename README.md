@@ -102,6 +102,30 @@ This project supports reproducible environments using **Docker** and **VS Code D
   make install
   ```
 
+## Dockerfile Overview
+
+This project includes a `Dockerfile` to ensure a reproducible and isolated environment for running your data analysis code.
+
+**Key steps in the Dockerfile:**
+- **Base Image:** Uses `python:3.10-slim` for a lightweight Python environment.
+- **Working Directory:** Sets `/app` as the working directory inside the container.
+- **Dependency Installation:**  
+  - Copies `requirements.txt` into the container.
+  - Installs all Python dependencies listed in `requirements.txt` using pip.
+- **Copy Project Files:** Copies all project files into the container.
+- **Default Command:** Runs `main.py` when the container starts.
+
+**How to use:**
+1. **Build the Docker image:**
+   ```sh
+   docker build -t mini_data_analysis .
+   ```
+2. **Run the Docker container:**
+   ```sh
+   docker run -it mini_data_analysis
+   ```
+
+
 ## Continuous Integration with GitHub Actions
 
 This project uses a GitHub Actions workflow for automated continuous integration (CI).  

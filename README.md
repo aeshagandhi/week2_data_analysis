@@ -2,34 +2,173 @@
 
 [![Python Template for IDS706](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml/badge.svg)](https://github.com/aeshagandhi/week2_data_analysis/actions/workflows/main.yml)
 
-Data analysis using Pandas/Polars on a Kaggle dataset
 
-All exploratory data analysis code is contained in the main.py file. The original code was done in main.ipynb to use jupyter notebook for more interactive exploration, and then main.ipynb was converted into main.py for the python script submission.
+## Project Structure
 
-About the data: The dataset is called CO₂ Emissions Across Countries, Regions, & Sectors, which includes detailed historical information on population, GDP, energy use, and emissions from cement, coal, oil, gas, flaring, and land-use change. The data is sourced from Our World in Data, but obtained from Kaggle. The dataset can be publicly found through Kaggle: https://www.kaggle.com/datasets/shreyanshdangi/co-emissions-across-countries-regions-and-sectors.
+The repository is organized as follows:
 
-This project explores global carbon dioxide and greenhouse gas emissions data and focuses on patterns on countries and years. To complete the analysis, both Pandas and Polars were used for performance comparison and to do basic data cleaning/visualization. To create a machine learning model, a Random Forest Regressor from Scikit-learn was used to recognize patterns in beneficial features for predicting carbon dioxide emissions. 
+```
+week2_data_analysis/
+├── .devcontainer/
+│   └── devcontainer.json         # VS Code Dev Container configuration
+├── .github/
+│   └── workflows/
+│       └── main.yml              # GitHub Actions CI workflow
+├── Data.csv                      # Kaggle dataset 
+├── Dockerfile                    # Docker image build instructions
+├── Makefile                      # Automation for install, lint, format, test, Docker, etc.
+├── README.md                     # Project documentation
+├── requirements.txt              # Python dependencies
+├── main.py                       # Main analysis and modeling script
+├── main.ipynb                    # Original Jupyter notebook (optional)
+├── test_main.py                  # Unit and system tests
+```
 
-Steps include:
-1. Import the dataset by loading the Kaggle dataset and inspecting the data via .head(), .info(), and .describe(). The dataset is 13.77 MB and contains 43746 rows and 80 columns. While the intitial size is larger than 5 MB, filtering was done later to create a subset of the data.
-2. Data cleaning included checking for missing values and duplicates and filling NaN values in mumeric columns with zeros.
-3. Filtering and grouping: The dataset was filtered to only consider countries, i.e. not territories or other regions, and only consider years after 1900. The dataset was grouped by year to examine trends in carbon dioxide emissions over time and also grouped by country/year to consider mean gdp and population and mean co2.
-4. Random Forest Machine Learning model: I Trained a Random Forest Regressor with 100 trees and split into 80/20 training-testing sets, with the target variable as total CO2 emissions. I evaluated the model using Mean Squared Error and R^2 score. Two models were created, the first one only had a few features ("population", "gdp", "cement_co2", "co2_per_capita") and then the second model inputted many more features such as population, gdp, primary_energy_consumption, cement_co2, coal_co2, oil_co2, methane, etc. The second model decreased the mean square error from 370 to 78.
-5. Plotting: Feature Importance plot was used to interpret the results of the random forest and identify the strongest predictors of CO2 emissions, which included greenhouse gas totals and primary energy consumption. From the analysis, these two features can be suggested as the main drivers of carbon dixoide emissions.
-6. Using Polars to explore the data and visualize the trends among the top 5 countries by mean CO2 emissions across all years since 1900. The stacked line plot shows that China has had rapid increase in emissions since 1990, while the U.S has been slowly decreasing their emissions in the last 20 years. Germany, Japan, and Russia have similar trends with each other while the U.S and China stand out more. 
+**Key files:**
+- `main.py`: All core data analysis, filtering, plotting, and ML code.
+- `main.ipynb`: All output of data analysis.
+- `test_main.py`: Unit and system tests for all major functions.
+- `requirements.txt`: All Python dependencies.
+- `Makefile`: Automates common tasks and Docker commands.
+- `Dockerfile`: Defines the container environment.
+- `.devcontainer/devcontainer.json`: VS Code Dev Container setup.
+- `.github/workflows/main.yml`: Continuous integration workflow.
+- `README.md`: Project overview, setup, and instructions.
 
-Conclusion: Energy consumption and total greenhouse gas emissions are strong predictors of CO2 emissions, which seems reasonable as carbon dioxide and fossil fuels use are often connected. Some features such as population and GDP aren't as important as expected when considering the emissions, maybe because there isn't as direct of a relationship in comparison to the top two features mentioned. The second random forest achieved a reasonable R squared score, suggesting the model could be capturing the relationship between the emissions and energy use decently well. However, more analysis could be done at more specific granularity such as at the country level, since the model could be biased by countries that are large emitters of energy such as China, India, and US. I also visualized, via line plot, carbon dioxide emissions for the U.S over time from 2000 to 2024 and was surprised to see a general decrease in emissions, which could be potentially explained by a general shift in seeking alternative energy sources.
+This structure ensures reproducibility, testability, and ease of development.
+
+## Development Environment Setup
+
+This project supports reproducible environments using **Docker** and **VS Code Dev Containers**.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed
+- [Visual Studio Code](https://code.visualstudio.com/) with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+### Docker Setup
+
+1. **Build the Docker image:**
+   ```sh
+   make build
+   ```
+2. **Run the Docker container:**
+   ```sh
+   make run
+   ```
+   This will start the container and map port 5004 to 5000.
+
+3. **Run tests inside the container:**
+   ```sh
+   make test
+   ```
+
+4. **Clean up Docker images:**
+   ```sh
+   make clean
+   ```
+
+### Dev Container Setup (VS Code)
+
+1. Open the project folder in VS Code.
+2. If prompted, click "Reopen in Container" or use the Command Palette (`Cmd+Shift+P`) and select **Dev Containers: Reopen in Container**.
+3. The container will build using the provided `Dockerfile` and install all dependencies from `requirements.txt`.
+4. You can now run, test, and develop in a consistent environment.
+
+### Testing
+
+- **Run all tests:**
+  ```sh
+  make test
+  ```
+- **Test coverage:**  
+  All core functions (data loading, filtering, grouping, preprocessing, ML model) are covered by unit and system tests in `test_main.py`.
+
+## Test Results
+
+![All tests passing](./tests_passed.png)
+
+### Automation
+
+- **Format code:**  
+  ```sh
+  make format
+  ```
+- **Lint code:**  
+  ```sh
+  make lint
+  ```
+- **Install dependencies:**  
+  ```sh
+  make install
+  ```
+
+## Continuous Integration with GitHub Actions
+
+This project uses a GitHub Actions workflow for automated continuous integration (CI).  
+The workflow is defined in `.github/workflows/main.yml` and runs automatically on every push and pull request.
+
+**What the workflow does:**
+- Checks out the repository code.
+- Sets up Python 3.11 on an Ubuntu runner.
+- Installs all dependencies from `requirements.txt`.
+- Runs linting on `main.py` using `flake8` to ensure code quality and style.
+
+This process helps keep the codebase clean and maintainable by catching linting errors early and ensuring all dependencies are installed for every build.
+
+---
+
+**Environment Summary:**  
+- Use Docker or Dev Container for reproducible environments.
+- All dependencies are in `requirements.txt`.
+- Common tasks are automated via the Makefile.
+- Run tests with `make test` to validate your code.
 
 
-This project also includes the following development environment:
-Dev Containers: The project includes a VS Code Dev Container for a consistent, reproducible development setup across machines.
+## Data Analysis Using Pandas/Polars on a Kaggle Dataset
 
-Makefile: Common tasks (installing dependencies, formatting, linting, testing) are automated through a simple Makefile. For example:
+All exploratory data analysis code is contained in the `main.py` file. The original code was done in `main.ipynb` for interactive exploration, and then converted into `main.py` for the Python script submission.
 
-make install   # install dependencies
-make format    # auto-format with Black
-make lint      # lint with flake8
-make test      # run tests
+### About the Data
+
+The dataset is called **CO₂ Emissions Across Countries, Regions, & Sectors**, which includes detailed historical information on population, GDP, energy use, and emissions from cement, coal, oil, gas, flaring, and land-use change. The data is sourced from Our World in Data, but obtained from Kaggle.  
+The dataset can be publicly found through Kaggle:  
+https://www.kaggle.com/datasets/shreyanshdangi/co-emissions-across-countries-regions-and-sectors.
+
+### Project Overview
+
+This project explores global carbon dioxide and greenhouse gas emissions data, focusing on patterns across countries and years. Both Pandas and Polars were used for performance comparison and basic data cleaning/visualization.  
+A Random Forest Regressor from Scikit-learn was used to recognize patterns in beneficial features for predicting carbon dioxide emissions.
+
+### Analysis Steps
+
+1. **Importing the Dataset:**  
+   Load the Kaggle dataset and inspect the data via `.head()`, `.info()`, and `.describe()`. The dataset is 13.77 MB and contains 43,746 rows and 80 columns. Filtering was done later to create a subset of the data.
+
+2. **Data Cleaning:**  
+   Check for missing values and duplicates, and fill NaN values in numeric columns with zeros.
+
+3. **Filtering and Grouping:**  
+   Filter the dataset to only consider countries (not territories or other regions) and years after 1900. Group by year to examine trends in carbon dioxide emissions over time, and by country/year to consider mean GDP, population, and mean CO₂.
+
+4. **Random Forest Machine Learning Model:**  
+   Train a Random Forest Regressor with 100 trees and split into 80/20 training-testing sets, with the target variable as total CO₂ emissions. Evaluate the model using Mean Squared Error and R² score.  
+   Two models were created: the first with a few features ("population", "gdp", "cement_co2", "co2_per_capita"), and the second with many more features. The second model decreased the mean square error from 370 to 78.
+
+5. **Plotting:**  
+   Feature Importance plot was used to interpret the results of the random forest and identify the strongest predictors of CO₂ emissions, which included greenhouse gas totals and primary energy consumption.
+
+6. **Polars Exploration:**  
+   Use Polars to explore the data and visualize trends among the top 5 countries by mean CO₂ emissions since 1900. The stacked line plot shows that China has had a rapid increase in emissions since 1990, while the U.S. has been slowly decreasing emissions in the last 20 years. Germany, Japan, and Russia have similar trends, while the U.S. and China stand out.
+
+### Conclusion
+
+Energy consumption and total greenhouse gas emissions are strong predictors of CO₂ emissions, which seems reasonable as carbon dioxide and fossil fuels use are often connected. Some features such as population and GDP aren't as important as expected when considering emissions, possibly due to a less direct relationship.  
+The second random forest achieved a reasonable R² score, suggesting the model could be capturing the relationship between emissions and energy use decently well. More analysis could be done at a more specific granularity, such as at the country level, since the model could be biased by large emitters like China, India, and the U.S.  
+A line plot of U.S. carbon dioxide emissions from 2000 to 2024 shows a general decrease, possibly explained by a shift toward alternative energy sources.
 
 
-GitHub Actions Workflow: A CI workflow (.github/workflows/python.yml) automatically runs on every push and pull request. It installs dependencies, lints the code with flake8, and ensures the codebase stays clean.
+
+
+
+
+

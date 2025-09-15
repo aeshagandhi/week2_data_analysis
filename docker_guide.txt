@@ -1,0 +1,16 @@
+Command Line Overview (Quick Pointers) for Docker:
+ docker build -t welcome-to-docker . → Build an image from the Dockerfile.
+ docker run -d -p 8088:3000 --name welcome-to-docker welcome-to-docker → Run the container in background, map ports,
+and give it a name.
+ docker stop welcome-to-docker → Stop the running container.
+ docker rm welcome-to-docker → Remove the container.
+ docker rmi welcome-to-docker → Remove the Docker image.
+ docker ps → See all running containers.
+
+
+Or can run in make file:
+make build → build Docker image
+ make run → run container (port 5003 → 5000)
+ make clean → remove image
+ make push → push to Docker Hub
+ make image_show / make container_show → inspect images & containers

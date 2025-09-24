@@ -149,7 +149,8 @@ def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
     plot_pd = plot_df.select(["year", "Name", TARGET_COLUMN]).to_pandas()
 
     plt.figure(figsize=(10, 6))
-    sns.lineplot(data=plot_pd, x="year", y=TARGET_COLUMN, hue="Name", marker="o")
+    sns.lineplot(data=plot_pd, x="year", 
+                 y=TARGET_COLUMN, hue="Name", marker="o")
     plt.title("CO₂ Emissions Over Time for Top 5 Countries")
     plt.xlabel("Year")
     plt.ylabel("CO₂ Emissions")

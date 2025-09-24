@@ -7,7 +7,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import os
 import matplotlib
+
 matplotlib.use("Agg")
+
 
 # -------------------------------
 # Data Loading
@@ -17,6 +19,7 @@ def load_data(filepath: str):
     df = pd.read_csv(filepath)
     pl_df = pl.read_csv(filepath)
     return df, pl_df
+
 
 # -------------------------------
 # Exploratory Data Analysis
@@ -37,6 +40,7 @@ def explore_data(df: pd.DataFrame, pl_df: pl.DataFrame):
     print("Duplicate rows:", df.duplicated().sum())
 
     return df
+
 
 # -------------------------------
 # Filtering and Grouping

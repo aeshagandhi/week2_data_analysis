@@ -34,4 +34,10 @@ jobs:
         name: analysis-results
         path: reports/
 
+    - name: Security scan
+      uses: pyupio/safety-action@v1
+      with:
+        args: --full-report
+
+
 

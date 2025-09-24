@@ -12,6 +12,54 @@ matplotlib.use("Agg")
 
 
 # -------------------------------
+# Define constants
+# -------------------------------
+REPORTS_DIR = "reports"
+DATA_FILE = "Data.csv"
+TARGET_COLUMN = "co2"
+
+FEATURES = [
+    "population",
+    "gdp",
+    "energy_per_capita",
+    "energy_per_gdp",
+    "primary_energy_consumption",
+    "cement_co2",
+    "coal_co2",
+    "oil_co2",
+    "gas_co2",
+    "flaring_co2",
+    "land_use_change_co2",
+    "methane",
+    "nitrous_oxide",
+    "total_ghg",
+    "total_ghg_excluding_lucf",
+    "co2_per_gdp",
+    "co2_per_capita",
+    "co2_per_unit_energy",
+    "share_global_co2",
+    "share_global_co2_including_luc",
+]
+
+
+# -------------------------------
+# Utilities
+# -------------------------------
+def clean_numeric(df: pd.DataFrame) -> pd.DataFrame:
+    """Fill numeric NaNs with 0."""
+    numeric_cols = df.select_dtypes(include="number").columns
+    return df.fillna({col: 0 for col in numeric_cols})
+
+
+def save_plot(filename: str):
+    """Save current plot to reports directory and close."""
+    os.makedirs(REPORTS_DIR, exist_ok=True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(REPORTS_DIR, filename))
+    plt.close()
+
+
+# -------------------------------
 # Data Loading
 # -------------------------------
 def load_data(filepath: str):
@@ -35,8 +83,7 @@ def explore_data(df: pd.DataFrame, pl_df: pl.DataFrame):
 
     # Nulls and duplicates
     print("Null values per column:\n", df.isnull().sum())
-    df = df.fillna({col: 0 for col in df.select_dtypes(
-        include="number").columns})
+    df = clean_numeric(df)
     print("Duplicate rows:", df.duplicated().sum())
 
     return df
@@ -47,11 +94,11 @@ def explore_data(df: pd.DataFrame, pl_df: pl.DataFrame):
 # -------------------------------
 def filter_data(df: pd.DataFrame, pl_df: pl.DataFrame):
     """Subset country-level data after 1900 in Pandas and Polars."""
-    subset_df = df[(df["Description"] == "Country") & (df["year"] >= 1900)]
+    filtered_data = df[(df["Description"] == "Country") & (df["year"] >= 1900)]
 
     # USA 21st century
-    us_df = subset_df[(subset_df["iso_code"] == "USA") & (
-        subset_df["year"] >= 2000)]
+    us_df = filtered_data[(filtered_data["iso_code"] == "USA") & (
+        filtered_data["year"] >= 2000)]
 
     # Polars filtering
     numeric_cols = [
@@ -60,12 +107,17 @@ def filter_data(df: pd.DataFrame, pl_df: pl.DataFrame):
     ]
     pl_df = pl_df.with_columns(
         [pl.col(col).fill_null(0) for col in numeric_cols])
-    subset_pl_df = pl_df.filter(
+    subset_pl_df = _filter_polars(pl_df)
+
+    return filtered_data, us_df, subset_pl_df
+
+
+def _filter_polars(pl_df: pl.DataFrame) -> pl.DataFrame:
+    """Helper method to filter Polars DataFrame."""
+    return pl_df.filter(
         (pl.col("Description").str.to_lowercase() == "country")
         & (pl.col("year") >= 1900)
     )
-
-    return subset_df, us_df, subset_pl_df
 
 
 # -------------------------------
@@ -74,22 +126,19 @@ def filter_data(df: pd.DataFrame, pl_df: pl.DataFrame):
 def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
     """Create plots for exploratory analysis."""
     # US emissions over time
-    os.makedirs("reports", exist_ok=True)
     plt.figure(figsize=(10, 6))
-    plt.plot(us_df["year"], us_df["co2"], marker="o", linestyle="-")
+    plt.plot(us_df["year"], us_df[TARGET_COLUMN], marker="o", linestyle="-")
     plt.title("U.S. CO₂ Emissions Over Time")
     plt.xlabel("Year")
     plt.ylabel("CO₂ Emissions (million tonnes)")
     plt.grid(True)
     # plt.show()
-    plt.tight_layout()
-    plt.savefig("reports/us_emissions.png")
-    plt.close()
+    save_plot("us_emissions.png")
 
     # Top 5 countries by mean CO2
     top_countries_df = (
         subset_pl_df.group_by("Name")
-        .agg(pl.col("co2").mean().alias("mean_co2"))
+        .agg(pl.col(TARGET_COLUMN).mean().alias("mean_co2"))
         .sort("mean_co2", descending=True)
         .head(5)
     )
@@ -97,19 +146,17 @@ def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
 
     # Filter and plot
     plot_df = subset_pl_df.filter(pl.col("Name").is_in(top_countries))
-    plot_pd = plot_df.select(["year", "Name", "co2"]).to_pandas()
+    plot_pd = plot_df.select(["year", "Name", TARGET_COLUMN]).to_pandas()
 
     plt.figure(figsize=(10, 6))
-    sns.lineplot(data=plot_pd, x="year", y="co2", hue="Name", marker="o")
+    sns.lineplot(data=plot_pd, x="year", y=TARGET_COLUMN, hue="Name", marker="o")
     plt.title("CO₂ Emissions Over Time for Top 5 Countries")
     plt.xlabel("Year")
     plt.ylabel("CO₂ Emissions")
     plt.legend(title="Country")
     plt.grid(True)
-    plt.tight_layout()
-    plt.savefig("reports/top5_countries.png")
     # plt.show()
-    plt.close()
+    save_plot("top5_countries.png")
 
 
 # -------------------------------
@@ -117,31 +164,8 @@ def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
 # -------------------------------
 def train_model(subset_df: pd.DataFrame):
     """Train a Random Forest model to predict CO₂ emissions."""
-    features = [
-        "population",
-        "gdp",
-        "energy_per_capita",
-        "energy_per_gdp",
-        "primary_energy_consumption",
-        "cement_co2",
-        "coal_co2",
-        "oil_co2",
-        "gas_co2",
-        "flaring_co2",
-        "land_use_change_co2",
-        "methane",
-        "nitrous_oxide",
-        "total_ghg",
-        "total_ghg_excluding_lucf",
-        "co2_per_gdp",
-        "co2_per_capita",
-        "co2_per_unit_energy",
-        "share_global_co2",
-        "share_global_co2_including_luc",
-    ]
-
-    X = subset_df[features].fillna(0)
-    y = subset_df["co2"]
+    X = subset_df[FEATURES].fillna(0)
+    y = subset_df[TARGET_COLUMN]
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
@@ -156,7 +180,7 @@ def train_model(subset_df: pd.DataFrame):
 
     # Feature importance plot
     importance = pd.Series(
-        rf.feature_importances_, index=features).sort_values(
+        rf.feature_importances_, index=FEATURES).sort_values(
         ascending=False
     )
 
@@ -165,18 +189,14 @@ def train_model(subset_df: pd.DataFrame):
     plt.title("Feature Importances for Predicting CO₂ Emissions")
     plt.xlabel("Importance Score")
     plt.ylabel("Feature")
-    plt.tight_layout()
-    plt.savefig("reports/feature_importances.png")
-    # plt.show()
-    plt.close()
+    save_plot("feature_importances.png")
 
 
 # -------------------------------
 # Main Function
 # -------------------------------
 def main():
-    filepath = "Data.csv"
-    df, pl_df = load_data(filepath)
+    df, pl_df = load_data(DATA_FILE)
 
     df = explore_data(df, pl_df)
     subset_df, us_df, subset_pl_df = filter_data(df, pl_df)

@@ -5,6 +5,10 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+import os
+import matplotlib
+matplotlib.use("Agg")
+
 
 
 # -------------------------------
@@ -70,13 +74,17 @@ def filter_data(df: pd.DataFrame, pl_df: pl.DataFrame):
 def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
     """Create plots for exploratory analysis."""
     # US emissions over time
+    os.makedirs("reports", exist_ok=True)
     plt.figure(figsize=(10, 6))
     plt.plot(us_df["year"], us_df["co2"], marker="o", linestyle="-")
     plt.title("U.S. CO₂ Emissions Over Time")
     plt.xlabel("Year")
     plt.ylabel("CO₂ Emissions (million tonnes)")
     plt.grid(True)
-    plt.show()
+    # plt.show()
+    plt.tight_layout()
+    plt.savefig("reports/us_emissions.png")
+    plt.close()
 
     # Top 5 countries by mean CO2
     top_countries_df = (
@@ -99,7 +107,9 @@ def plot_analysis(us_df: pd.DataFrame, subset_pl_df: pl.DataFrame):
     plt.legend(title="Country")
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    plt.savefig("reports/top5_countries.png")
+    # plt.show()
+    plt.close()
 
 
 # -------------------------------
@@ -156,7 +166,9 @@ def train_model(subset_df: pd.DataFrame):
     plt.xlabel("Importance Score")
     plt.ylabel("Feature")
     plt.tight_layout()
-    plt.show()
+    plt.savefig("reports/feature_importances.png")
+    # plt.show()
+    plt.close()
 
 
 # -------------------------------

@@ -136,9 +136,12 @@ The workflow is defined in `.github/workflows/main.yml` and runs automatically o
 - Sets up Python 3.11 on an Ubuntu runner.
 - Installs all dependencies from `requirements.txt`.
 - Runs linting on `main.py` using `flake8` to ensure code quality and style.
+The following enhancements were made into the CI workflow for the latest week 5 assignment (see commit diff below):
 - Tracking for test coverage to measure how much of the project's code gets executed during test runs.
 - Archive generated visualizations and plots as archives in Github for public visibility.
 - Security scan step to check each dependency being installed from requirements.txt for known vulnerabilites. This checks if any versions could have security issues, which is important for reproducability and security, as well as compliance.
+![commit diff](./de-commit-workflow-ss.jpg)
+
 
 This process helps keep the codebase clean and maintainable by catching linting errors early and ensuring all dependencies are installed for every build.
 
@@ -204,6 +207,13 @@ Minor code changes were made which do not affect the overall functionality of th
 - extract common plotting setups and saving plots into separate functions
 - extract data cleaning into a helper function to reduce repetitive operations such as filling na valus
 - split the train_model function into smaller sub functions for easier understandablity
+See the commit diffs below for all refactoring/code improvements:
+![](./DE_commit-ss1.jpg)
+![](./de-commit-ss2.jpg)
+![](./de-commit-ss3.jpg)
+![](./de-commit-ss4.jpg)
+
+
 
 
 

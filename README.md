@@ -136,7 +136,9 @@ The workflow is defined in `.github/workflows/main.yml` and runs automatically o
 - Sets up Python 3.11 on an Ubuntu runner.
 - Installs all dependencies from `requirements.txt`.
 - Runs linting on `main.py` using `flake8` to ensure code quality and style.
-The following enhancements were made into the CI workflow for the latest week 5 assignment (see commit diff below):
+
+
+**The following enhancements were made into the CI workflow for the latest week 5 assignment (see commit diff below):**
 - Tracking for test coverage to measure how much of the project's code gets executed during test runs.
 - Archive generated visualizations and plots as archives in Github for public visibility.
 - Security scan step to check each dependency being installed from requirements.txt for known vulnerabilites. This checks if any versions could have security issues, which is important for reproducability and security, as well as compliance.

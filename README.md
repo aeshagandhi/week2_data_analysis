@@ -136,6 +136,9 @@ The workflow is defined in `.github/workflows/main.yml` and runs automatically o
 - Sets up Python 3.11 on an Ubuntu runner.
 - Installs all dependencies from `requirements.txt`.
 - Runs linting on `main.py` using `flake8` to ensure code quality and style.
+- Tracking for test coverage to measure how much of the project's code gets executed during test runs.
+- Archive generated visualizations and plots as archives in Github for public visibility.
+- Security scan step to check each dependency being installed from requirements.txt for known vulnerabilites. This checks if any versions could have security issues, which is important for reproducability and security, as well as compliance.
 
 This process helps keep the codebase clean and maintainable by catching linting errors early and ensuring all dependencies are installed for every build.
 
@@ -162,6 +165,7 @@ https://www.kaggle.com/datasets/shreyanshdangi/co-emissions-across-countries-reg
 
 This project explores global carbon dioxide and greenhouse gas emissions data, focusing on patterns across countries and years. Both Pandas and Polars were used for performance comparison and basic data cleaning/visualization.  
 A Random Forest Regressor from Scikit-learn was used to recognize patterns in beneficial features for predicting carbon dioxide emissions.
+Question: What factors influence the global carbon dioxide emissions the most and use these to build a predictive model? 
 
 ### Analysis Steps
 
@@ -172,7 +176,8 @@ A Random Forest Regressor from Scikit-learn was used to recognize patterns in be
    Check for missing values and duplicates, and fill NaN values in numeric columns with zeros.
 
 3. **Filtering and Grouping:**  
-   Filter the dataset to only consider countries (not territories or other regions) and years after 1900. Group by year to examine trends in carbon dioxide emissions over time, and by country/year to consider mean GDP, population, and mean CO₂.
+   Filter the dataset to only consider countries (not territories or other regions) and years after 1900. Group by year to examine trends in carbon dioxide emissions over time, and by country/year to consider mean GDP, population, and mean CO₂. For example, I explored the United States carbon dioxide emissions over time since 2000, because I was interested in seeing how the U.S has been working to lower their emissions in recent years and whether their missions to do so have been successful. From the plot below, there is an overall decrease in carbon dioxide emissions, but it is interesting to notice the ups and downs within recent years. Like from 2017 to 2020, the carbon emissions were decreasing but then after 2020, began to increase again, which would be interesting to question in its relationship with the COVID-19 pandemic.
+   ![US Emissions](./reports/us_emissions.png)
 
 4. **Random Forest Machine Learning Model:**  
    Train a Random Forest Regressor with 100 trees and split into 80/20 training-testing sets, with the target variable as total CO₂ emissions. Evaluate the model using Mean Squared Error and R² score.  
@@ -180,9 +185,12 @@ A Random Forest Regressor from Scikit-learn was used to recognize patterns in be
 
 5. **Plotting:**  
    Feature Importance plot was used to interpret the results of the random forest and identify the strongest predictors of CO₂ emissions, which included greenhouse gas totals and primary energy consumption.
+   ![Feature Importances](./reports/feature_importances.png)
+
 
 6. **Polars Exploration:**  
-   Use Polars to explore the data and visualize trends among the top 5 countries by mean CO₂ emissions since 1900. The stacked line plot shows that China has had a rapid increase in emissions since 1990, while the U.S. has been slowly decreasing emissions in the last 20 years. Germany, Japan, and Russia have similar trends, while the U.S. and China stand out.
+   Use Polars to explore the data and visualize trends among the top 5 countries by mean CO₂ emissions since 1900. The stacked line plot shows that China has had a rapid increase in emissions since 1990, while the U.S. has been slowly decreasing emissions in the last 20 years. Germany, Japan, and Russia have similar trends, while the U.S. and China stand out. This is a helpful discovery for understanding which countries contribute to higher carbon emissions and how their current plans are affecting emissions over time. For example, the U.S general public has become more conscious of global issues such as global warming, climate change, and energy consumption, and many organizations proactively aim to reduce their emissions especially recently.  
+   ![Top 5 Countries Emissions](./reports/top5_countries.png)
 
 ### Conclusion
 
@@ -190,7 +198,12 @@ Energy consumption and total greenhouse gas emissions are strong predictors of C
 The second random forest achieved a reasonable R² score, suggesting the model could be capturing the relationship between emissions and energy use decently well. More analysis could be done at a more specific granularity, such as at the country level, since the model could be biased by large emitters like China, India, and the U.S.  
 A line plot of U.S. carbon dioxide emissions from 2000 to 2024 shows a general decrease, possibly explained by a shift toward alternative energy sources.
 
-
+### Codebase Refactoring/Changes
+Minor code changes were made which do not affect the overall functionality of the code but improve readability and efficiency in main.py. These include:
+- extracting the constants for paths, column names, and features at the top to remove redundant use
+- extract common plotting setups and saving plots into separate functions
+- extract data cleaning into a helper function to reduce repetitive operations such as filling na valus
+- split the train_model function into smaller sub functions for easier understandablity
 
 
 

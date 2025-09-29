@@ -197,9 +197,9 @@ Question: What factors influence the global carbon dioxide emissions the most an
 
 ### Conclusion
 
-Energy consumption and total greenhouse gas emissions are strong predictors of CO₂ emissions, which seems reasonable as carbon dioxide and fossil fuels use are often connected. Some features such as population and GDP aren't as important as expected when considering emissions, possibly due to a less direct relationship.  
-The second random forest achieved a reasonable R² score, suggesting the model could be capturing the relationship between emissions and energy use decently well. More analysis could be done at a more specific granularity, such as at the country level, since the model could be biased by large emitters like China, India, and the U.S.  
-A line plot of U.S. carbon dioxide emissions from 2000 to 2024 shows a general decrease, possibly explained by a shift toward alternative energy sources.
+Energy consumption and total greenhouse gas emissions are strong predictors of CO₂ emissions, which seems reasonable as carbon dioxide and fossil fuels use are often connected. Some features such as population and GDP aren't as important as expected when considering emissions, possibly due to a less direct relationship. This was a surprising discovery as intutively we would expect larger population countries to naturally be larger energy emmitters.   
+The second random forest, which was much for feature rich, achieved a reasonable R² score, suggesting the model could be capturing the relationship between emissions and energy use decently well. More analysis could be done at a more specific granularity, such as at the country level, since the model could be biased by large emitters like China, India, and the U.S. Modeling at the country level could show clearer patterns in. specific features and account for regional differences as well.
+A line plot of U.S. carbon dioxide emissions from 2000 to 2024 shows a general decrease, possibly explained by a shift toward alternative energy sources. This project provides insights into forecasting emissions and evaluating the impact of national and global energy policies. Possibly in combination with political data on proposals and bills in the energy sector, more predictive modeling and machine learning models could be produced.
 
 ### Codebase Refactoring/Changes
 Minor code changes were made which do not affect the overall functionality of the code but improve readability and efficiency in main.py. These include:
